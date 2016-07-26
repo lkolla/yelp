@@ -6,8 +6,15 @@
 //  Copyright © 2016 Timothy Lee. All rights reserved.
 //
 
-import UIKit
+import Foundation
 
-class YelpSearchSettings: NSObject {
+class YelpSearchSettings {
+    
+    var searchString: String?
+    var minStars = 0
+    
+    init() {
+        
+    }
 
 }

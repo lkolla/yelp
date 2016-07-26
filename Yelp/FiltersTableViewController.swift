@@ -8,8 +8,25 @@
 
 import UIKit
 
+@objc protocol FiltersTableViewControllerDelegate {
+    optional func filtersTableViewController(filtersTableViewController: FiltersTableViewController, didUpdateFilters filters: [String:AnyObject])
+}
+
+
 class FiltersTableViewController: UITableViewController {
 
+    var distances: [Int] = [1609,3218,4828,6437,8046]
+    var categories: [String] = ["newamerican","indpak","mexican","chinese","thai"]
+    
+    var sortBy: [Int] = [0,1,2]
+    var findDeals: Bool = false
+    
+    var selectedSortBy: Int = 0
+    var selectedDistance: Int = 0
+    var selectedCategories: [String] = []
+    
+    weak var delegate: FiltersTableViewControllerDelegate?
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -19,8 +36,56 @@ class FiltersTableViewController: UITableViewController {
         // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
         // self.navigationItem.rightBarButtonItem = self.editButtonItem()
     }
+    
+    @IBAction func onSortByValueChanged(sender: AnyObject) {
+        
+        selectedSortBy = sortBy[(sender as! UISegmentedControl).selectedSegmentIndex]
+        
+    }
+    
+    @IBAction func onCancel(sender: AnyObject) {
+        dismissViewControllerAnimated(true, completion: nil)
+    }
+    
+    
+    @IBAction func onSearch(sender: AnyObject) {
+        
+        dismissViewControllerAnimated(true, completion: nil)
+        
+        var filters = [String: AnyObject]()
+        
+        filters["sortby"] = selectedSortBy
+        filters["distance"] = selectedDistance
+        filters["deals"] = findDeals
+        filters["categories"] = selectedCategories
+        
+        delegate?.filtersTableViewController?(self, didUpdateFilters: filters)
+        
+    }
+    
+    
+    @IBAction func onRadiusChanged(sender: AnyObject) {
+        
+        selectedDistance = distances[(sender as! UISegmentedControl).selectedSegmentIndex]
+        
+    }
+    
+    @IBAction func findDeals(sender: AnyObject) {
+        
+        self.findDeals = (sender as! UISwitch).on
+        
+    }
+    
+    @IBAction func onCategorySelection(sender: AnyObject) {
+ 
+        let s = sender as! UISwitch
+        selectedCategories.append(categories[s.tag])
 
-    override func didReceiveMemoryWarning() {
+    }
+    
+    
+
+    /*override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
@@ -35,7 +100,7 @@ class FiltersTableViewController: UITableViewController {
     override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         // #warning Incomplete implementation, return the number of rows
         return 0
-    }
+    }*/
 
     /*
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
